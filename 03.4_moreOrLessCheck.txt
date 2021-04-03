@@ -1,0 +1,29 @@
+/* 
+TESTS:
+1. Проверить, что 2-й элемент массива salary больше 1-го и 0-го
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name':name,
+	'age': int(age),
+	'salary': [salary, str(salary*2), str(salary*3)]}
+*/
+
+// Проверка Salary*2 > Salary*1, Salary*2 > Salary0
+var salary0 = jsonData.salary[0];
+var salary1 = +jsonData.salary[1];
+var salary2 = +jsonData.salary[2];
+
+pm.test("Salary2 > Salary1", function () {  
+    pm.expect(salary1).to.be.below(salary2);
+});
+
+pm.test("Salary2 > Salary0", function () {  
+    pm.expect(salary0).to.be.below(salary2);
+});

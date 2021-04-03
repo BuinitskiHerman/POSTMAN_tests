@@ -1,0 +1,32 @@
+/* 
+TESTS:
+1. Достать значение из поля 'u_salary_1.5_year' и передать в поле salary запроса http://116.203.27.46:5002/get_test_user
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name':name,
+	'age': int(age),
+	'salary': [salary, str(salary*2), str(salary*3)]}
+*/
+
+// достать значения из поля u_salary_1.5_year и передать в поле salary запроса get_test_user
+let salary = +(pm.environment.get('salary_1.5_years'))
+console.log(salary);
+
+pm.sendRequest({
+    method: 'POST',
+    url: 'http://116.203.27.46:5002/get_test_user',
+    body: {
+        mode: 'formdata',
+        formdata: [
+            {key: 'salary', value: salary},
+            {key: 'auth_token', value: pm.environment.get('token')}
+        ]
+    }
+});

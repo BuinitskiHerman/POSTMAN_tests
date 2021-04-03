@@ -1,0 +1,27 @@
+/* 
+TESTS:
+1. В ответе указаны коэффициенты умножения salary, напишите тесты по проверке правильности результата перемножения на коэффициент.
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name':name,
+	'age': int(age),
+	'salary': [salary, str(salary*2), str(salary*3)]}
+*/
+
+// Проверка правильности результата перемножения на коэффициент
+var jsonData = pm.response.json();
+var startSalary = +pm.request.body.formdata.get('salary');
+pm.test("Multiplication result (x2)", function () {
+    pm.expect(startSalary * 2).to.eql(+jsonData.salary[1]);
+});
+
+pm.test("Multiplication result (x3)", function () {
+    pm.expect(startSalary * 3).to.eql(+jsonData.salary[2]);
+});

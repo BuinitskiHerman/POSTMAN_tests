@@ -1,0 +1,78 @@
+/* 
+TESTS:
+1. Проверка структуры json в ответе.
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'start_qa_salary':salary,
+ 'qa_salary_after_6_months': salary * 2,
+ 'qa_salary_after_12_months': salary * 2.9,
+ 'person': {'u_name':[user_name, salary, age],
+                                'u_age':age,
+                                'u_salary_1.5_year': salary * 4}
+                                }
+
+*/
+
+// Проверка структуры json в ответе
+var schema = {
+    "type": "object",
+    "properties": {
+        "person": {
+            "type": "object",
+            "properties": {
+                "u_age": {
+                    "type": "integer"
+                },
+                "u_name": {
+                    "type": "array",
+                    "items": [
+                        {
+                        "type": "string"
+                        },
+                        {
+                        "type": "integer"
+                        },
+                        {
+                        "type": "integer"
+                        }
+                    ]
+                },
+                "u_salary_1_5_year": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+            "u_age",
+            "u_name",
+            "u_salary_1_5_year"
+            ]
+        },
+        "qa_salary_after_12_months": {
+            "type": "number"
+        },
+        "qa_salary_after_6_months": {
+            "type": "integer"
+        },
+        "start_qa_salary": {
+            "type": "integer"
+        }
+    },
+    "required": [
+    "person",
+    "qa_salary_after_12_months",
+    "qa_salary_after_6_months",
+    "start_qa_salary"
+    ]
+};
+
+var jsonData = pm.response.json() 
+pm.test('Schema is valid', function () {
+    pm.expect(tv4.validate(jsonData, schema)).to.be.true;
+});

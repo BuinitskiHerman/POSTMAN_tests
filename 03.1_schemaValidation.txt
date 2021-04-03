@@ -1,0 +1,53 @@
+/* 
+TESTS:
+1. Проверка структуры json в ответе.
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name':name,
+	'age': int(age),
+	'salary': [salary, str(salary*2), str(salary*3)]}
+*/
+
+// Проверка структуры json в ответе
+var schema = {
+    "type": "object",
+    "properties": {
+        "age": {
+            "type": "integer"
+        },
+        "name": {
+            "type": "string"
+        },
+        "salary": {
+            "type": "array",
+            "items": [
+                {
+                "type": "integer"
+                },
+                {
+                "type": "string"
+                },
+                {
+                "type": "string"
+                }
+            ]
+        }
+    },
+    "required": [
+    "age",
+    "name",
+    "salary"
+    ]
+}
+
+var jsonData = pm.response.json();
+pm.test('Schema is valid', function () {
+    pm.expect(tv4.validate(jsonData, schema)).to.be.true;
+});
