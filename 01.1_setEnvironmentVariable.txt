@@ -1,0 +1,20 @@
+/* 
+TESTS:
+1. Приходящий токен необходимо передать во все остальные запросы.
+
+REQUEST:
+Метод: POST
+Body:   Login : string (кроме /)
+        Password : string
+
+RESPONSE:
+{
+    "token": "string"
+}
+*/
+
+// Извлечение токена из тела ответа и создание переменной окружения
+pm.test("Set token", function () {
+    var jsonData = pm.response.json();
+    pm.environment.set("token", jsonData.token);
+});
