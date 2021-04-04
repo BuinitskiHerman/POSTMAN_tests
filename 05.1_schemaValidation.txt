@@ -1,0 +1,86 @@
+/* 
+TESTS:
+1. Проверка структуры json в ответе.
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name': name,
+ 'age':age,
+ 'salary': salary,
+ 'family':{'children':[['Alex', 24],['Kate', 12]],
+ 'u_salary_1.5_year': salary * 4}
+  }
+*/
+
+//Проверка структуры json в ответе
+var schema = {
+    "type": "object",
+    "properties": {
+        "age": {
+            "type": "string"
+        },
+        "family": {
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": [
+                        {
+                        "type": "array",
+                        "items": [
+                            {
+                            "type": "string"
+                            },
+                            {
+                            "type": "integer"
+                            }
+                        ]
+                        },
+                    {
+                    "type": "array",
+                    "items": [
+                        {
+                        "type": "string"
+                        },
+                        {
+                        "type": "integer"
+                        }
+                    ]
+                    }
+                    ]
+                },
+                "u_salary_1_5_year": {
+                    "type": "integer"
+                }
+    },
+    "required": [
+    "children",
+    "u_salary_1_5_year"
+    ]
+    },
+        "name": {
+            "type": "string"
+        },
+        "salary": {
+            "type": "integer"
+        }
+    },
+
+"required": [
+    "age",
+    "family",
+    "name",
+    "salary"
+]
+}
+
+var jsonData = pm.response.json();
+pm.test('Schema is valid', function () {
+    pm.expect(tv4.validate(jsonData, schema)).to.be.true;
+});

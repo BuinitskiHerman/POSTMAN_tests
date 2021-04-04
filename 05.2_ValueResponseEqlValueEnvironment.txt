@@ -1,0 +1,25 @@
+/* 
+TESTS:
+1. Проверить что занчение поля name = значению переменной name из окружения
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name': name,
+ 'age':age,
+ 'salary': salary,
+ 'family':{'children':[['Alex', 24],['Kate', 12]],
+ 'u_salary_1.5_year': salary * 4}
+  }
+*/
+
+//Проверка name response = name environment
+var jsonData = pm.response.json();
+pm.test("Name response = name environment", function () {
+    pm.expect(jsonData.name).to.eql(pm.environment.get("name"));
+});

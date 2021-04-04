@@ -1,0 +1,27 @@
+/* 
+TESTS:
+1. Проверить что занчение поля age в ответе соответсвует отправленному в запросе значению поля age
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        salary: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name': name,
+ 'age':age,
+ 'salary': salary,
+ 'family':{'children':[['Alex', 24],['Kate', 12]],
+ 'u_salary_1.5_year': salary * 4}
+  }
+*/
+
+//Проверка, что значение поля age в ответе соответствует отправленному в запросе значению поля age
+var jsonData = pm.response.json();
+var ageFormData = +pm.request.body.formdata.get('age');
+pm.test("Request Age = Response Age", function () {
+    pm.expect(jsonData.age).to.eql(ageFormData);
+});
+

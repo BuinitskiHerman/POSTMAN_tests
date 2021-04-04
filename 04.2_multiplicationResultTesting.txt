@@ -1,0 +1,28 @@
+/* 
+TESTS:
+1. В ответе указаны коэффициенты умножения weight, напишите тесты по проверке правильности результата перемножения на коэффициент.
+
+REQUEST:
+Метод: POST
+Body:   age: int
+        weight: int
+        name: str
+        auth_token
+
+RESPONSE:
+{'name': name,
+ 'age': age,
+ 'daily_food':weight * 0.012,
+ 'daily_sleep': weight * 2.5}
+*/
+
+//Проверка правильности результата перемножения на коэфициент
+let requestWeight = pm.request.body.formdata.get('weight');
+let jsonData = pm.response.json();
+pm.test("Checking the correctness of multiplication by daily_food", function () {
+    pm.expect(requestWeight * 0.012).to.eql(jsonData.daily_food);
+});
+
+pm.test("Checking the correctness of multiplication by daily_sleep", function () {
+    pm.expect(requestWeight * 2.5).to.eql(jsonData.daily_sleep);
+});
