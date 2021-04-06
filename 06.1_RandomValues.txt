@@ -1,0 +1,34 @@
+/* 
+TESTS:
+1. Можете взять любой объект из присланного списка, используйте js random.
+2. В объекте возьмите Cur_ID и передайте через окружение в следующий запрос.
+
+REQUEST:
+Метод: POST
+Body: auth_token
+
+RESPONSE:
+Передаётся список массив объектов.
+[
+{"Cur_Abbreviation": str,
+ "Cur_ID": int,
+ "Cur_Name": str
+}
+…
+{"Cur_Abbreviation": str,
+ "Cur_ID": int,
+ "Cur_Name": str
+}
+]
+*/
+
+var jsonData = pm.response.json();
+function randomID() {
+    return Math.floor(Math.random() * jsonData.length);
+};
+
+var randCurrencyObject = jsonData[randomID()];
+var randCurrencyArray = Object.values(randCurrencyObject);
+
+pm.environment.set("Cur_ID", +randCurrencyArray[1]);
+
