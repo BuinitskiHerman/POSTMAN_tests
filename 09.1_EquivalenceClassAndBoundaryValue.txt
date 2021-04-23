@@ -1,0 +1,170 @@
+/* 
+TESTS:
+1. Создать набор тестов, использующий техники тест-дизайна: классы эквивалентности, граничных значений.
+2. Ожидаемые классы: "age_class": "0-17", "18-50", "50-100".
+
+REQUEST:
+Метод: POST
+Body: "age: int"
+
+RESPONSE:
+"age": "1",
+"age_type": "underage",
+"content": [
+        "Tom & Jerry (Feb. 26)",
+        "Raya and the Last Dragon (Mar. 5)",
+        "Peter Rabbit 2: The Runaway (April 2)",
+        "Rumble (May 14)",
+        "Minions: The Rise of Gru (July 2)",
+        "Space Jam 2: A New Legacy (July 16)",
+        "The Addams Family 2 (Oct. 8)",
+        "Encanto (Nov. 24)"
+]		
+*/
+
+//Решение:
+В ходе дополнительных уточнений по заданию было выяснено, что пересечение двух классов на возрасте 50 можно трактовать произвольно, поэтому для теста были выбраны дипазоны 18-50, 51-100.
+Так же стало известно, что ожидаемый результат работы системы за границами классов: сообщение об ошибке 500.
+Таким образом разбиваем тест одного запроса на 4 группы: 
+'0-17' (тестовые данные: 10, 0, 17), 
+'18-50' (тестовые данные: 25, 18, 50), 
+'51-100' (тестовые данные: 70, 51, 100), 
+'Status 500' (тестовые данные: -1, 101, дроби, пробел, пустое значение, спецсимволы).
+
+// Проверка класса эквивалентности 0-17
+// Введите в массив через запятую тестовые данные
+// (Вводим значение из класса, а так же крайние значения класса. Крайние значения соседнего класса проверяются в других тестах).
+
+let arr = [10, 0, 17];
+console.log(arr[1]);
+
+let index;
+for (index = 0; index < arr.length; ++index) {
+    let testData = arr[index];
+    pm.sendRequest({
+        url: 'http://116.203.27.46:5002/age_europe',
+        method: 'POST',
+        headers: {},
+        body: {
+            mode: 'formdata',
+            formdata: [
+                {key: 'age', value: arr[index]}
+            ] 
+        }   
+    }, function(err, res) {
+        console.log('Age value: ' + testData);
+        //console.log(res);
+        //console.log(Object.values(res));
+        let statusCode = Object.values(res)[3];
+            
+            if (statusCode === 200) {
+                let resType = res.json();
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(resType.age_type).to.include('underage');
+                });
+            } else {
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(res).to.have.property('code', 200);   
+                });
+            };  
+        });
+}
+
+// Проверка класса эквивалентности 18-50
+// Введите в массив через запятую тестовые данные
+// (Вводим значение из класса, а так же крайние значения класса. Крайние значения соседнего класса проверяются в других тестах).
+
+let arr = [25, 18, 50];
+
+let index;
+for (index = 0; index < arr.length; ++index) {
+    let testData = arr[index];
+    pm.sendRequest({
+        url: 'http://116.203.27.46:5002/age_europe',
+        method: 'POST',
+        headers: {},
+        body: {
+            mode: 'formdata',
+            formdata: [
+                {key: 'age', value: arr[index]}
+            ] 
+        }   
+    }, function(err, res) {
+        console.log('Age value: ' + testData);
+        let statusCode = Object.values(res)[3];
+            
+            if (statusCode === 200) {
+                let resType = res.json();
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(resType.age_type).to.include('adult');
+                });
+            } else {
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(res).to.have.property('code', 200);   
+                });
+            };  
+        });
+}
+
+// Проверка класса эквивалентности 51-100
+// Введите в массив через запятую тестовые данные
+// (Вводим значение из класса, а так же крайние значения класса. Крайние значения соседнего класса проверяются в других тестах).
+
+let arr = [70, 51, 100];
+
+let index;
+for (index = 0; index < arr.length; ++index) {
+    let testData = arr[index];
+    pm.sendRequest({
+        url: 'http://116.203.27.46:5002/age_europe',
+        method: 'POST',
+        headers: {},
+        body: {
+            mode: 'formdata',
+            formdata: [
+                {key: 'age', value: arr[index]}
+            ] 
+        }   
+    }, function(err, res) {
+        console.log('Age value: ' + testData);
+        let statusCode = Object.values(res)[3];
+            
+            if (statusCode === 200) {
+                let resType = res.json();
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(resType.age_type).to.include('antiquity');
+                });
+            } else {
+                pm.test('Age value: ' + testData, function () {
+                pm.expect(res).to.have.property('code', 200);   
+                });
+            };  
+        });
+}
+
+// Проверка на Status 500
+// Введите в массив через запятую тестовые данные
+// (Вводим все, что должно вызвать Status 500)
+
+let arr = ['', ' ', -1, 101, 1000, -1000, 0.5, '0,5', 'abc', '.', '/', '?', ':', '-', '+', '=', '#', '$', '%', '&', ',', '?', '@', '"', ';', '*'];
+
+let index;
+for (index = 0; index < arr.length; ++index) {
+    let testData = arr[index];
+    pm.sendRequest({
+        url: 'http://116.203.27.46:5002/age_europe',
+        method: 'POST',
+        headers: {},
+        body: {
+            mode: 'formdata',
+            formdata: [
+                {key: 'age', value: arr[index]}
+            ] 
+        }   
+    }, function(err, res) {
+        console.log('Age value: ' + testData);
+        pm.test('Age value: ' + testData, function () {
+            pm.expect(res).to.have.property('code', 500);
+        });
+    });
+}
