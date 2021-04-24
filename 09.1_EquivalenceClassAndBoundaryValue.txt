@@ -52,8 +52,6 @@ for (index = 0; index < arr.length; ++index) {
         }   
     }, function(err, res) {
         console.log('Age value: ' + testData);
-        //console.log(res);
-        //console.log(Object.values(res));
         let statusCode = Object.values(res)[3];
             
             if (statusCode === 200) {
