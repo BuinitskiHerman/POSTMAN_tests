@@ -1,0 +1,52 @@
+/*
+TESTS:
+1. Создать набор тестов для тестирования формы регистрации http://itcareer.pythonanywhere.com/
+
+REQUEST:
+Метод: POST
+Body: 	{
+    	'name': '{{name}}',
+    	'surname': '{{surname}}',
+    	'email': '{{email}}',
+    	'password': '{{password}}'
+	}
+
+RESPONSE:
+HTML
+
+Решение:
+Так как форма регистрации имеет два варианта ответа при отправке данных из формы - Success и Error - достаточно обработать html страницу ответа в поисках ключевого слова используя модуль Cheerio.
+
+Пример Success в html:
+<div class="alert alert-info">
+	<strong>Success! </strong> Hello: Herman Buinitski
+</div>
+
+Пример Error в html:
+<div class="alert alert-danger">
+	<strong>Error: </strong> Error: All Fields are Required
+</div>
+
+После достаточно проверить, соответствует ли ответ значению, с которым сравниваем.
+*/
+
+// POST http://itcareer.pythonanywhere.com/
+// для всех наборов входных данных с ожидаемым ответом Success:
+
+const $ = cheerio.load(pm.response.text())
+
+pm.test('Registration Success', () => {
+    let status = ('srtong', $('strong').text())
+    pm.expect(status).to.eql('Success! ');
+});
+
+
+// POST http://itcareer.pythonanywhere.com/
+// для всех наборов входных данных с ожидаемым ответом Error:
+
+const $ = cheerio.load(pm.response.text())
+
+pm.test('Registration Error', () => {
+    let status = ('srtong', $('strong').text())
+    pm.expect(status).to.eql('Error: ');
+});
